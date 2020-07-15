@@ -27,7 +27,7 @@ public class TaskReporController {
     @GetMapping(value="/GenerateReport")
     public void writeExcel() {
 
-        LOGGER.info("Inside WriteExcel method of:" + CLASS_NAME);
+        LOGGER.info("Inside WriteExcel method of: " + CLASS_NAME);
 
         List<TaskResponse> list = service.getAllRecords();
         LOGGER.info("List of Task is:" + list.toString());
