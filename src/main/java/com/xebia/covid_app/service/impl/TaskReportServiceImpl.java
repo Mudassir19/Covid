@@ -8,6 +8,8 @@ import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,10 @@ public class TaskReportServiceImpl implements TaskReportService {
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet("Task_Details");
 
+		CreationHelper createHelper = workbook.getCreationHelper();
+		CellStyle cellStyle = workbook.createCellStyle();
+		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/mm/yy h:mm"));
+
 		for (int i = 0; i < list.size(); i++) {
 
 			if (i == 0) {
@@ -49,8 +55,8 @@ public class TaskReportServiceImpl implements TaskReportService {
 				rowhead.createCell(6).setCellValue("Location");
 				rowhead.createCell(7).setCellValue("Status");
 				rowhead.createCell(8).setCellValue("TaskCreatedBy");
-				rowhead.createCell(9).setCellValue("TaskCreationDate");
-				rowhead.createCell(10).setCellValue("TaskDescription");
+				rowhead.createCell(9).setCellValue("TaskDescription");
+				rowhead.createCell(10).setCellValue("TaskCreationDate");
 				rowhead.createCell(11).setCellValue("TaskUpdationDate");
 				rowhead.createCell(12).setCellValue("TaskUpdationBy");
 				rowhead.createCell(13).setCellValue("Imagepath");
@@ -71,10 +77,17 @@ public class TaskReportServiceImpl implements TaskReportService {
 			row.createCell(6).setCellValue(list.get(i).getArea().getLocation().getLocation());
 			row.createCell(7).setCellValue(list.get(i).getStatus().getStatus());
 			row.createCell(8).setCellValue(list.get(i).getTaskCreatedBy().getFirstName());
-			row.createCell(9).setCellValue(list.get(i).getTaskCreationDate());
-			row.createCell(10).setCellValue(list.get(i).getTaskDescription());
+			row.createCell(9).setCellValue(list.get(i).getTaskDescription());
+
+			row.createCell(10).setCellStyle(cellStyle);
+			row.createCell(10).setCellValue(list.get(i).getTaskCreationDate());
+			
+			row.createCell(11).setCellStyle(cellStyle);
 			row.createCell(11).setCellValue(list.get(i).getTaskUpdationDate());
+			
+
 			row.createCell(12).setCellValue(list.get(i).getTaskUpdatedBy().getFirstName());
+
 			row.createCell(13).setCellValue(list.get(i).getImagepath());
 			row.createCell(14).setCellValue(list.get(i).getManpower());
 			row.createCell(15).setCellValue(list.get(i).getComments());
