@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +35,43 @@ public class TaskReporController {
 	@Autowired
 	private TaskReportService service;
 
-	@PostMapping(value = "/GenerateReport")
+	@GetMapping(value = "/report")
+	public ResponseEntity<Object> generateReport() throws IOException {
+
+		List<Task> list = service.getRecords();
+		LOGGER.info("List of Task is: " + list.toString());
+		int totalTask = list.size();
+		LOGGER.info("Total Task is:" + totalTask);
+
+		// String filePath = "D:/covidApp/excel/taskRecord.xls";
+
+		File file = File.createTempFile("temp", null);
+		String filePath = file.getAbsolutePath();
+		System.out.println("AbsolutePath" + file.getAbsolutePath());
+
+		service.createExcel(list, filePath);
+
+		// String filename = filePath;
+		// File file = new File(filename);
+		InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+		HttpHeaders headers = new HttpHeaders();
+		// headers.add("Content-Disposition", String.format("filename=\"%s\"",
+		// filename));
+		headers.add("Content-disposition", "attachment;filename=sample.xls");
+		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+		headers.add("Pragma", "no-cache");
+		headers.add("Expires", "0");
+
+		ResponseEntity<Object> responseEntity = ResponseEntity.ok().headers(headers).contentLength(file.length())
+				.contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
+
+		file.deleteOnExit();
+		return responseEntity;
+
+	}
+
+	@PostMapping(value = "/generateReport")
 	public ResponseEntity<Object> downlaodExcel(@RequestHeader String date1, @RequestHeader String date2)
 			throws IOException {
 
@@ -60,19 +97,16 @@ public class TaskReporController {
 		int totalTask = list.size();
 		LOGGER.info("Total Task is:" + totalTask);
 
-		//String filePath = "D:/covidApp/excel/taskRecord.xls";
-	
-		 File file = File.createTempFile("temp", null);
-		 String filePath=file.getAbsolutePath();
-		 System.out.println("AbsolutePath"+file.getAbsolutePath());
-		
-	
-		
+		// String filePath = "D:/covidApp/excel/taskRecord.xls";
+
+		File file = File.createTempFile("temp", null);
+		String filePath = file.getAbsolutePath();
+		System.out.println("AbsolutePath" + file.getAbsolutePath());
 
 		service.createExcel(list, filePath);
 
-		//String filename = filePath;
-		//File file = new File(filename);
+		// String filename = filePath;
+		// File file = new File(filename);
 		InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
 		HttpHeaders headers = new HttpHeaders();
@@ -86,7 +120,7 @@ public class TaskReporController {
 		ResponseEntity<Object> responseEntity = ResponseEntity.ok().headers(headers).contentLength(file.length())
 				.contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
 
-		 file.deleteOnExit();
+		file.deleteOnExit();
 		return responseEntity;
 
 	}

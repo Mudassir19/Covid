@@ -11,6 +11,8 @@ public interface TaskReportService {
 	
 	public List<Task> getRecordsBetweenDates(Date startDate,Date endDate);
 	
+	public List<Task> getRecords();
+	
 	public  void createExcel(List<Task> list, String filePath) throws IOException;
 
 }

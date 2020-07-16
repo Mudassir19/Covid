@@ -113,9 +113,15 @@ public class TaskReportServiceImpl implements TaskReportService {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSSSSS");
 
 		String date1 = dateFormat.format(date);
-		//LOGGER.info("Converted date to string:" + date1);
+		// LOGGER.info("Converted date to string:" + date1);
 		return date1;
 
+	}
+
+	@Override
+	public List<Task> getRecords() {
+
+		return taskRepository.findAll();
 	}
 
 }
