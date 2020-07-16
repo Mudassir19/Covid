@@ -2,24 +2,33 @@ package com.xebia.covid_app.controller;
 
 import java.util.List;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.xebia.covid_app.service.TempUsername;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.xebia.covid_app.entities.Frequency;
 import com.xebia.covid_app.entities.Location;
 import com.xebia.covid_app.models.TaskRequest;
 import com.xebia.covid_app.models.TaskResponse;
 import com.xebia.covid_app.models.UserResponse;
 import com.xebia.covid_app.service.TaskMangementService;
-import org.springframework.web.multipart.MultipartFile;
+import com.xebia.covid_app.service.TempUsername;
 
 @CrossOrigin("*")
 @RestController
@@ -35,7 +44,7 @@ public class TaskMangementController {
 	private TaskMangementService service;
 
 	@GetMapping("/renewStatus")
-	public void reload(){
+	public void reload() {
 		service.renewStatus();
 	}
 
@@ -47,7 +56,7 @@ public class TaskMangementController {
 
 		UserResponse response = new UserResponse();
 		try {
-			service.createRecords(taskRequest,tempUsername);
+			service.createRecords(taskRequest, tempUsername);
 			response.setMessage("Task has been successfully Added");
 			response.setStatus("success");
 			return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -88,14 +97,14 @@ public class TaskMangementController {
 		}
 	}
 
-	@PutMapping(value = "/edit/task/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserResponse> editRecords(@RequestBody TaskRequest taskRequest,@PathVariable("id") int id){
+	@PutMapping(value = "/edit/task/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserResponse> editRecords(@RequestBody TaskRequest taskRequest, @PathVariable("id") int id) {
 		UserResponse userResponse = new UserResponse();
 		UserResponse.Payload payload = userResponse.new Payload();
 
 		LOGGER.info("inside editRecord method of " + CLASS_NAME);
 		try {
-			List<TaskResponse> taskList = service.editRecord(taskRequest,id);
+			List<TaskResponse> taskList = service.editRecord(taskRequest, id);
 			LOGGER.info("Edited Record is" + taskList);
 			userResponse.setStatus("success");
 			userResponse.setMessage("successfully edit the records:");
@@ -160,6 +169,7 @@ public class TaskMangementController {
 
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping(value = "delete/task/{id}")
 	public ResponseEntity<UserResponse> deleteRecord(@PathVariable("id") int id) {
 		UserResponse response = new UserResponse();
@@ -172,7 +182,8 @@ public class TaskMangementController {
 	}
 
 	@PutMapping(value = "/update/task")
-	public ResponseEntity<UserResponse> updateRecord(@RequestParam(required = false, name = "file") MultipartFile file, @RequestParam String task) {
+	public ResponseEntity<UserResponse> updateRecord(@RequestParam(required = false, name = "file") MultipartFile file,
+			@RequestParam String task) {
 		UserResponse response = new UserResponse();
 		try {
 			JsonObject jsonObject = new JsonParser().parse(task).getAsJsonObject();

@@ -119,37 +119,37 @@ public class PieChartServiceImpl implements PieChartService {
 			}
 		}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-		PieChart cMon = new PieChart("comMon", comMon);
-		PieChart uMon = new PieChart("upcMon", upcMon);
-		PieChart pMon = new PieChart("penMon", penMon);
+		PieChart cMon = new PieChart("Completed", comMon);
+		PieChart uMon = new PieChart("Upcoming", upcMon);
+		PieChart pMon = new PieChart("Pending", penMon);
 		monday.add(cMon);
 		monday.add(uMon);
 		monday.add(pMon);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-		PieChart cTue = new PieChart("comTue", comTue);
-		PieChart uTue = new PieChart("upcTue", upcTue);
-		PieChart pTue = new PieChart("penTue", penTue);
+		PieChart cTue = new PieChart("Completed", comTue);
+		PieChart uTue = new PieChart("Upcoming", upcTue);
+		PieChart pTue = new PieChart("Pending", penTue);
 		tuesday.add(cTue);
 		tuesday.add(uTue);
 		tuesday.add(pTue);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-		PieChart cWed = new PieChart("comWed", comWed);
-		PieChart uWed = new PieChart("upcWed", upcWed);
-		PieChart pWed = new PieChart("penWed", penWed);
+		PieChart cWed = new PieChart("Completed", comWed);
+		PieChart uWed = new PieChart("Upcoming", upcWed);
+		PieChart pWed = new PieChart("Pending", penWed);
 		wednesday.add(cWed);
 		wednesday.add(uWed);
 		wednesday.add(pWed);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-		PieChart cThu = new PieChart("comThu", comThu);
-		PieChart uThu = new PieChart("upcThu", upcThu);
-		PieChart pThu = new PieChart("penThu", penThu);
+		PieChart cThu = new PieChart("Completed", comThu);
+		PieChart uThu = new PieChart("Upcoming", upcThu);
+		PieChart pThu = new PieChart("Pending", penThu);
 		thursday.add(cThu);
 		thursday.add(uThu);
 		thursday.add(pThu);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-		PieChart cFri = new PieChart("comFri", comFri);
-		PieChart uFri = new PieChart("upc", upcFri);
-		PieChart pFri = new PieChart("pen", penFri);
+		PieChart cFri = new PieChart("Completed", comFri);
+		PieChart uFri = new PieChart("Upcoming", upcFri);
+		PieChart pFri = new PieChart("Pending", penFri);
 		friday.add(cFri);
 		friday.add(uFri);
 		friday.add(pFri);
