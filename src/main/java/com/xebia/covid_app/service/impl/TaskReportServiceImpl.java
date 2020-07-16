@@ -2,14 +2,14 @@ package com.xebia.covid_app.service.impl;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +37,6 @@ public class TaskReportServiceImpl implements TaskReportService {
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet("Task_Details");
 
-		CreationHelper createHelper = workbook.getCreationHelper();
-		CellStyle cellStyle = workbook.createCellStyle();
-		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/mm/yy h:mm"));
-
 		for (int i = 0; i < list.size(); i++) {
 
 			if (i == 0) {
@@ -57,11 +53,12 @@ public class TaskReportServiceImpl implements TaskReportService {
 				rowhead.createCell(8).setCellValue("TaskCreatedBy");
 				rowhead.createCell(9).setCellValue("TaskDescription");
 				rowhead.createCell(10).setCellValue("TaskCreationDate");
-				rowhead.createCell(11).setCellValue("TaskUpdationDate");
-				rowhead.createCell(12).setCellValue("TaskUpdationBy");
-				rowhead.createCell(13).setCellValue("Imagepath");
-				rowhead.createCell(14).setCellValue("ManPower");
-				rowhead.createCell(15).setCellValue("Comments");
+				rowhead.createCell(11).setCellValue("TaskDate");
+				rowhead.createCell(12).setCellValue("TaskUpdationDate");
+				rowhead.createCell(13).setCellValue("TaskUpdationBy");
+				rowhead.createCell(14).setCellValue("Imagepath");
+				rowhead.createCell(15).setCellValue("ManPower");
+				rowhead.createCell(16).setCellValue("Comments");
 
 			}
 
@@ -79,18 +76,17 @@ public class TaskReportServiceImpl implements TaskReportService {
 			row.createCell(8).setCellValue(list.get(i).getTaskCreatedBy().getFirstName());
 			row.createCell(9).setCellValue(list.get(i).getTaskDescription());
 
-			row.createCell(10).setCellStyle(cellStyle);
-			row.createCell(10).setCellValue(list.get(i).getTaskCreationDate());
-			
-			row.createCell(11).setCellStyle(cellStyle);
-			row.createCell(11).setCellValue(list.get(i).getTaskUpdationDate());
-			
+			row.createCell(10).setCellValue(Date2String(list.get(i).getTaskCreationDate()));
 
-			row.createCell(12).setCellValue(list.get(i).getTaskUpdatedBy().getFirstName());
+			row.createCell(11).setCellValue(Date2String(list.get(i).getTaskDate()));
 
-			row.createCell(13).setCellValue(list.get(i).getImagepath());
-			row.createCell(14).setCellValue(list.get(i).getManpower());
-			row.createCell(15).setCellValue(list.get(i).getComments());
+			row.createCell(12).setCellValue(Date2String(list.get(i).getTaskUpdationDate()));
+
+			row.createCell(13).setCellValue(list.get(i).getTaskUpdatedBy().getFirstName());
+
+			row.createCell(14).setCellValue(list.get(i).getImagepath());
+			row.createCell(15).setCellValue(list.get(i).getManpower());
+			row.createCell(16).setCellValue(list.get(i).getComments());
 
 		}
 		FileOutputStream fileOut = new FileOutputStream(filePath);
@@ -110,6 +106,15 @@ public class TaskReportServiceImpl implements TaskReportService {
 		LOGGER.info("Query Result:" + listTask);
 
 		return listTask;
+
+	}
+
+	private static String Date2String(Date date) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSSSSS");
+
+		String date1 = dateFormat.format(date);
+		//LOGGER.info("Converted date to string:" + date1);
+		return date1;
 
 	}
 
