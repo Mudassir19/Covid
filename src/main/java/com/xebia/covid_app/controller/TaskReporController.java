@@ -1,68 +1,86 @@
 package com.xebia.covid_app.controller;
 
-import com.xebia.covid_app.models.TaskResponse;
-import com.xebia.covid_app.service.TaskMangementService;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.xebia.covid_app.entities.Task;
+import com.xebia.covid_app.service.TaskReportService;
 
 @CrossOrigin("*")
 @RestController
 public class TaskReporController {
-    private static final String CLASS_NAME = TaskMangementController.class.getName();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CLASS_NAME);
+	private static final String CLASS_NAME = TaskReporController.class.getName();
 
-    @Autowired
-    private TaskMangementService service;
+	private static final Logger LOGGER = LoggerFactory.getLogger(CLASS_NAME);
 
-    @GetMapping(value="/GenerateReport")
-    public void writeExcel() {
+	@Autowired
+	private TaskReportService service;
 
-        LOGGER.info("Inside WriteExcel method of: " + CLASS_NAME);
+	@PostMapping(value = "/GenerateReport")
+	public ResponseEntity<Object> downlaodExcel(@RequestHeader String date1, @RequestHeader String date2)
+			throws IOException {
 
-        List<TaskResponse> list = service.getAllRecords();
-        LOGGER.info("List of Task is:" + list.toString());
-        int totalTask = list.size();
-        LOGGER.info("Total Task is:" + totalTask);
+		LOGGER.info("Inside WriteExcel method of:" + CLASS_NAME);
 
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet=workbook.createSheet("Task_Details");
+		LOGGER.info("date1:" + date1);
+		LOGGER.info("date2:" + date2);
 
-        for(int i=0;i<totalTask;i++) {
+		Date startDate = null;
+		Date endDate = null;
+		try {
+			startDate = new SimpleDateFormat("yyyy-MM-dd").parse(date1);
+			LOGGER.info("Converted Date1:" + startDate);
+			endDate = new SimpleDateFormat("yyyy-MM-dd").parse(date2);
+			LOGGER.info("Converted Date2:" + endDate);
+		} catch (ParseException e1) {
+			LOGGER.error("Exception occured while converting the date:");
+			e1.printStackTrace();
+		}
 
-            if(i==0){
-                HSSFRow rowhead = sheet.createRow((short) 0);
-                rowhead.createCell(0).setCellValue("Sr. No.");
-                rowhead.createCell(1).setCellValue("ID");
-                rowhead.createCell(2).setCellValue("AssignToId");
-                rowhead.createCell(3).setCellValue("Comments");
-                rowhead.createCell(4).setCellValue("FrequencyId");
-                rowhead.createCell(5).setCellValue("LocationId");
-                rowhead.createCell(6).setCellValue("Status");
-            }
+		List<Task> list = service.getRecordsBetweenDates(startDate, endDate);
+		LOGGER.info("List of Task is: " + list.toString());
+		int totalTask = list.size();
+		LOGGER.info("Total Task is:" + totalTask);
 
-            HSSFRow row = sheet.createRow(i + 1);
-            row.createCell(0).setCellValue(i + 1); // Sr. No.
-            row.createCell(1).setCellValue(list.get(i).getId());
+		String filePath = "D:/covidApp/excel/taskRecord.xls";
 
-            row.createCell(2).setCellValue(list.get(i).getAssignToId());
-            row.createCell(3).setCellValue(list.get(i).getComments());
-            row.createCell(4).setCellValue(list.get(i).getFrequencyId());
-//            row.createCell(5).setCellValue(list.get(i).getLocationId());
+		service.createExcel(list, filePath);
 
-            row.createCell(6).setCellValue(list.get(i).getStatus());
+		String filename = filePath;
+		File file = new File(filename);
+		InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
-        }
+		HttpHeaders headers = new HttpHeaders();
+		// headers.add("Content-Disposition", String.format("filename=\"%s\"",
+		// filename));
+		headers.add("Content-disposition", "attachment;filename=sample.xls");
+		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+		headers.add("Pragma", "no-cache");
+		headers.add("Expires", "0");
 
+		ResponseEntity<Object> responseEntity = ResponseEntity.ok().headers(headers).contentLength(file.length())
+				.contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
 
-    }
+		return responseEntity;
+
+	}
+
 }

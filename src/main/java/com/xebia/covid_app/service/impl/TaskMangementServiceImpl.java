@@ -77,6 +77,10 @@ public class TaskMangementServiceImpl implements TaskMangementService {
 
         Optional <User> user = userRepository.findByUsername(tempUsername.getUsername());
         task.setTaskCreatedBy(user.get());
+        
+        Optional <User> user2 = userRepository.findByUsername(tempUsername.getUsername());
+        task.setTaskUpdatedBy(user2.get());
+        
 
         task.setTaskDate(DateManager.setTimeVariable(hour, date));
         taskRepository.save(task);
@@ -127,6 +131,7 @@ public class TaskMangementServiceImpl implements TaskMangementService {
             response.setComments(taskList.get(i).getComments());
             response.setTaskCreatedById(taskList.get(i).getTaskCreatedBy().getId());
             response.setTaskCreationDate(taskList.get(i).getTaskCreationDate());
+            response.setTaskUpdatedById(taskList.get(i).getTaskUpdatedBy().getId());
             response.setTaskUpdatDate(taskList.get(i).getTaskUpdationDate());
             responseList.add(response);
         }

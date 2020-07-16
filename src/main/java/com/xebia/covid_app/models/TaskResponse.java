@@ -20,8 +20,19 @@ public class TaskResponse {
     private String taskCreatedById;
     private Date taskCreationDate;
     private Date taskDate;
-
+    
+	private String taskUpdatedById;
     private Date taskUpdatDate;
+
+    public String getTaskUpdatedById() {
+		return taskUpdatedById;
+	}
+
+	public void setTaskUpdatedById(String taskUpdatedById) {
+		this.taskUpdatedById = taskUpdatedById;
+	}
+
+
 
     public String getTaskDescription() {
         return taskDescription;
