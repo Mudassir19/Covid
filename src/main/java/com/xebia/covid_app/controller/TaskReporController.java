@@ -3,6 +3,8 @@ package com.xebia.covid_app.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,12 +62,19 @@ public class TaskReporController {
 		int totalTask = list.size();
 		LOGGER.info("Total Task is:" + totalTask);
 
-		String filePath = "D:/covidApp/excel/taskRecord.xls";
+		//String filePath = "D:/covidApp/excel/taskRecord.xls";
+	
+		 File file = File.createTempFile("temp", null);
+		 String filePath=file.getAbsolutePath();
+		 System.out.println("AbsolutePath"+file.getAbsolutePath());
+		
+	
+		
 
 		service.createExcel(list, filePath);
 
-		String filename = filePath;
-		File file = new File(filename);
+		//String filename = filePath;
+		//File file = new File(filename);
 		InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
 		HttpHeaders headers = new HttpHeaders();
@@ -79,6 +88,7 @@ public class TaskReporController {
 		ResponseEntity<Object> responseEntity = ResponseEntity.ok().headers(headers).contentLength(file.length())
 				.contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
 
+		 file.deleteOnExit();
 		return responseEntity;
 
 	}
