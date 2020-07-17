@@ -4,6 +4,7 @@ public class UserNamesResponse {
 
     private String id;
     private String username;
+    private String role;
 
     public String getId() {
         return id;
@@ -21,4 +22,11 @@ public class UserNamesResponse {
         this.username = username;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

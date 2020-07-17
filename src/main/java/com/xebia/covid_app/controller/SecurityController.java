@@ -140,6 +140,7 @@ public class SecurityController {
 
             userNamesResponse.setId(usersList.get(i).getId());
             userNamesResponse.setUsername(usersList.get(i).getFirstName());
+            userNamesResponse.setRole(usersList.get(i).getRoles());
 
             listnames.add(userNamesResponse);
         }

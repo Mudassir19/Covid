@@ -169,7 +169,7 @@ public class TaskMangementController {
 
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_SUPERADMIN')")
 	@DeleteMapping(value = "delete/task/{id}")
 	public ResponseEntity<UserResponse> deleteRecord(@PathVariable("id") int id) {
 		UserResponse response = new UserResponse();
