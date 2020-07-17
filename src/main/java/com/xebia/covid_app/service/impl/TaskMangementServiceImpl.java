@@ -2,6 +2,7 @@ package com.xebia.covid_app.service.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -117,7 +118,11 @@ public class TaskMangementServiceImpl implements TaskMangementService {
         for (int i = 0; i < taskList.size(); i++) {
 
             response = new TaskResponse();
-            response.setTaskDate(taskList.get(i).getTaskDate());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+            String strDate= formatter.format(taskList.get(i).getTaskDate());
+
+            response.setTaskDate(strDate);
             response.setId(taskList.get(i).getId());
             response.setTaskDescription(taskList.get(i).getTaskDescription());
             response.setManPower(taskList.get(i).getManpower());

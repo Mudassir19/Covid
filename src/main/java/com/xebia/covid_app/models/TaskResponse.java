@@ -19,7 +19,7 @@ public class TaskResponse {
 
     private String taskCreatedById;
     private Date taskCreationDate;
-    private Date taskDate;
+    private String taskDate;
     
 	private String taskUpdatedById;
     private Date taskUpdatDate;
@@ -146,11 +146,11 @@ public class TaskResponse {
         this.locationId = locationId;
     }
 
-    public Date getTaskDate() {
+    public String getTaskDate() {
         return taskDate;
     }
 
-    public void setTaskDate(Date taskDate) {
+    public void setTaskDate(String taskDate) {
         this.taskDate = taskDate;
     }
 }
