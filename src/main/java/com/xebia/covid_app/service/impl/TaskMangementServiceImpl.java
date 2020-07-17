@@ -119,7 +119,7 @@ public class TaskMangementServiceImpl implements TaskMangementService {
 
             response = new TaskResponse();
 
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
             String strDate= formatter.format(taskList.get(i).getTaskDate());
 
             response.setTaskDate(strDate);
